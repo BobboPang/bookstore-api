@@ -8,6 +8,7 @@ import { UserService } from './user/user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './config/keys';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { BookCellModule } from './book-cell/book-cell.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -20,6 +21,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
       entities: [User],
       synchronize: true,
     }),
+    BookCellModule,
   ],
   controllers: [AppController],
   providers: [AppService],
