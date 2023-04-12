@@ -1,51 +1,56 @@
 import { Injectable } from '@nestjs/common';
+import { cryptoString } from '../libs/lib';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
-import { User } from '../user/user.entity';
-import { compare } from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
-import { RedisService } from 'nestjs-redis';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
-    private readonly jwtService: JwtService,
-    private readonly redisService: RedisService,
+    private usersService: UsersService,
+    private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<User> {
-    const user = await this.userService.findByUsername(username);
-    if (!user) {
-      return null;
+  async validateUser(username: string, password: string): Promise<any> {
+    console.log('auth service validateUser', username, password);
+    const data = await this.usersService.findOneByName(username);
+
+    console.log('auth service validateUser data', data);
+
+    const user = JSON.parse(JSON.stringify(data || {}));
+
+    password = cryptoString(password);
+
+    if (user && user.password === password) {
+      const { password, ...result } = user;
+      return result;
     }
-    const isMatch = await compare(password, user.password);
-    if (!isMatch) {
-      return null;
-    }
-    return user;
+    return null;
   }
 
-  async login(user: User): Promise<string> {
-    const payload = { id: user.id };
-    const token = this.jwtService.sign(payload);
-    const redis = this.redisService.getClient();
-    const key = uuidv4();
-    await redis.set(key, token, 'EX', 600); // Token 有效期为 10 分钟
-    return key;
+  // 登录
+  async login(user: any) {
+    console.log('login:', user);
+    const payload = {
+      username: user.name,
+      userId: user['id'],
+      roles: user.roles,
+      status: user.status,
+      department: user.department,
+      phone: user.phone,
+      avatar: user.avatar,
+      departmentName: user.departmentName,
+      departmentId: user.departmentId,
+      areaId: user.areaId,
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
-  async verifyToken(key: string): Promise<boolean> {
-    const redis = this.redisService.getClient();
-    const token = await redis.get(key);
-    if (!token) {
-      return false;
-    }
-    try {
-      this.jwtService.verify(token);
-      return true;
-    } catch (e) {
-      return false;
-    }
+  // 登出
+  async logout() {
+    return {
+      message: 'ok',
+    };
   }
 }

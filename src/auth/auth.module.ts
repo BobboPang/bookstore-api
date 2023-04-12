@@ -1,19 +1,24 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from '../user/user.module';
-import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../config/keys';
-import { JwtStrategy } from './jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { AuthService } from './auth.service';
+import { jwtConstants } from '../libs/lib';
+import { JwtStrategyUser } from './strategies/jwt.strategy';
+import { LocalStrategyUser } from './strategies/local.strategy';
+import { AuthController } from './auth.controller';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
-    UserModule,
+    PassportModule.register({ defaultStrategy: 'userjwt' }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '600s' }, // Token 有效期为 10 分钟
+      signOptions: { expiresIn: '365d' },
     }),
+    UsersModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, LocalStrategyUser, JwtStrategyUser],
   exports: [AuthService],
+  controllers: [AuthController],
 })
 export class AuthModule {}
