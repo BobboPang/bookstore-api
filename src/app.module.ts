@@ -8,7 +8,6 @@ import { UsersService } from './users/users.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './config/keys';
 // import { JwtStrategy } from './auth_bak/jwt.strategy';
-import { BookCellModule } from './book-cell/book-cell.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { join } from 'path';
@@ -16,6 +15,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AddressModule } from './address/address.module';
+import { BooksModule } from './books/books.module';
 import configDefault from '../config/config.default';
 @Module({
   imports: [
@@ -50,10 +50,10 @@ import configDefault from '../config/config.default';
       },
     ),
     // 业务模块...
-    BookCellModule,
     AuthModule,
     UsersModule,
     AddressModule,
+    BooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
