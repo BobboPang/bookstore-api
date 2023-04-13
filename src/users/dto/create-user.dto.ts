@@ -4,6 +4,9 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
+  account: string;
+
+  @IsString()
   name: string;
 
   @IsNotEmpty()
@@ -17,8 +20,8 @@ export class CreateUserDto {
 
   intro: string;
 
-  @IsBoolean()
-  status: boolean;
+  // @IsBoolean()
+  // status: boolean;
 
   createdAt: Date;
 

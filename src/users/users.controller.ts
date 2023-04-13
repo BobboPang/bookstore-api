@@ -33,7 +33,7 @@ export class UsersController {
   }
 
   // 增加
-  @UseGuards(JwtAuthGuardUser)
+  // @UseGuards(JwtAuthGuardUser)
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<Users> {
     return await this.usersService.create(createUserDto);

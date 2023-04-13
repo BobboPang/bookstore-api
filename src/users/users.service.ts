@@ -16,25 +16,26 @@ export class UsersService {
 
   // 增加
   async create(createUserDto: CreateUserDto): Promise<any> {
-    const { name, password, createdAt, status } = createUserDto;
+    const { name, password, createdAt, account } = createUserDto;
     console.log(createUserDto);
     createUserDto.password = cryptoString(password);
     createUserDto.createdAt = createdAt || new Date();
     createUserDto.updatedAt = new Date();
-    createUserDto.status = status || true;
+    // createUserDto.status = status || true;
+    createUserDto.account = account;
 
     delete createUserDto.id;
 
     const isExist = await this.usersRepository.count({
       where: {
-        name,
+        account,
       },
     });
     console.log(isExist);
     if (isExist > 0) {
       return {
         statusCode: 202,
-        message: '已存在',
+        message: '该账户已存在',
       };
     }
 
@@ -89,7 +90,7 @@ export class UsersService {
 
     params = Object.assign(
       {
-        select: ['id', 'name', 'updatedAt', 'status'],
+        select: ['id', 'name', 'updatedAt'],
       },
       params,
       {
@@ -108,6 +109,13 @@ export class UsersService {
       total,
       data,
     };
+  }
+
+  // 根据账号名查找
+  async findOneByAccount(account: string): Promise<any> {
+    return this.usersRepository.findOne({
+      where: { account: account },
+    });
   }
 
   // 根据用户名查找

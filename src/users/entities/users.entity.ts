@@ -6,6 +6,9 @@ export class Users {
   id: string;
 
   @Column()
+  account: string;
+
+  @Column()
   name: string;
 
   @Column()
@@ -26,8 +29,8 @@ export class Users {
   })
   intro: string;
 
-  @Column()
-  status: boolean;
+  // @Column()
+  // status: boolean;
 
   @Column({
     select: false,

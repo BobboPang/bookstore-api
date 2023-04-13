@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { cryptoString } from '../libs/lib';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
@@ -10,9 +10,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
-    console.log('auth service validateUser', username, password);
-    const data = await this.usersService.findOneByName(username);
+  async validateUser(account: string, password: string): Promise<any> {
+    console.log('auth service validateUser', account, password);
+    const data = await this.usersService.findOneByAccount(account);
 
     console.log('auth service validateUser data', data);
 
@@ -30,6 +30,11 @@ export class AuthService {
   // 登录
   async login(user: any) {
     console.log('login:', user);
+    const validate = await this.validateUser(user.account, user.password);
+    console.log('validate00000', user);
+    if (!validate) {
+      throw new UnauthorizedException();
+    }
     const payload = {
       username: user.name,
       userId: user['id'],
