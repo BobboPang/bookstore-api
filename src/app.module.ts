@@ -15,6 +15,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AddressModule } from './address/address.module';
 import configDefault from '../config/config.default';
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import configDefault from '../config/config.default';
     BookCellModule,
     AuthModule,
     UsersModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],

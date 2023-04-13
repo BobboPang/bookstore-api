@@ -11,8 +11,8 @@ export class UpdateUserDto {
 
   intro: string;
 
-  @IsBoolean()
-  status: boolean;
+  // @IsBoolean()
+  // status: boolean;
 
   updatedAt: Date;
 }
