@@ -16,7 +16,7 @@ import { JwtAuthGuardUser } from 'src/auth/guards/jwt-auth.guard';
 import { Book } from './entities/book.entity';
 import { FindBookDto } from './dto/find-book.dto';
 
-@Controller('books')
+@Controller('api/books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
